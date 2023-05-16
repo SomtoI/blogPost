@@ -1,0 +1,14 @@
+{
+  "name": "blogpost",
+  "version": "1.0.0",
+  "description": "ShyftLabs Tech Interview Node.js Version",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "graphQL"
+  ],
+  "author": "Somto Idigo",
+  "license": "ISC"
+}
