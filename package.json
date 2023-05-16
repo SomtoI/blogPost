@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "ShyftLabs Tech Interview Node.js Version",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "test": "npm test"
   },
@@ -10,5 +11,14 @@
     "graphQL"
   ],
   "author": "Somto Idigo",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "jest": "^29.5.0",
+    "jsonwebtoken": "^9.0.0",
+    "mssql": "^9.1.1",
+    "sequelize": "^6.31.1"
+  }
 }
