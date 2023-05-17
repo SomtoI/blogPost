@@ -1,5 +1,3 @@
-// src/resolvers/postResolvers.js
-
 import { Post } from "../models";
 
 const postResolvers = {

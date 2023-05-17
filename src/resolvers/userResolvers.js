@@ -1,6 +1,5 @@
-// src/resolvers/userResolvers.js
-
 import { User } from "../models";
+//import sequelize from '../db';
 
 const userResolvers = {
   Query: {
@@ -27,13 +26,36 @@ const userResolvers = {
     },
   },
   Mutation: {
-    createUser: async (_, { input }) => {
+    createUser: async (_, { username, email, password }) => {
       try {
-        const user = await User.create(input);
-        return user;
+        const hashedPassword = await hashPassword(password);
+        const user = await User.create({
+          username,
+          email,
+          password: hashedPassword,
+        });
+        const token = generateToken(user);
+        return { user, token };
       } catch (error) {
         console.error("Error creating user:", error);
         throw new Error("Failed to create user");
+      }
+    },
+    login: async (_, { email, password }) => {
+      try {
+        const user = await User.findByEmail(email);
+        if (!user) {
+          throw new Error("Invalid email or password");
+        }
+        const isMatch = await comparePasswords(password, user.password);
+        if (!isMatch) {
+          throw new Error("Invalid email or password");
+        }
+        const token = generateToken(user);
+        return { user, token };
+      } catch (error) {
+        console.error("Error logging in:", error);
+        throw new Error("Failed to log in");
       }
     },
     updateUser: async (_, { id, input }) => {

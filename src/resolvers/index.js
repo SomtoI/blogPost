@@ -11,6 +11,10 @@ const resolvers = {
   ...userResolvers,
   ...postResolvers,
   ...commentResolvers,
+  Mutation: {
+    ...userResolvers.Mutation,
+    login: userResolvers.login,
+  },
 };
 
 export default resolvers;

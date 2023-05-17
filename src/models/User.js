@@ -1,7 +1,11 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db.config";
 
-class User extends Model {}
+class User extends Model {
+  static findByEmail(email) {
+    return this.findOne({ where: { email } });
+  }
+}
 
 User.init(
   {

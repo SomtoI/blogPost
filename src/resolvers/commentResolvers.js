@@ -1,5 +1,3 @@
-// src/resolvers/commentResolvers.js
-
 import { Comment } from "../models";
 
 const commentResolvers = {

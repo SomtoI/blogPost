@@ -1,40 +1,23 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { User } from "../models";
+import bcrypt from "bcrypt";
 
-export const generateToken = (user) => {
-  const token = jwt.sign(
-    {
-      userId: user.id,
-      username: user.username,
-      email: user.email,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1h" }
-  );
+const generateToken = (user) => {
+  const { id, username, email } = user;
+  const token = jwt.sign({ id, username, email }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
   return token;
 };
 
-export const verifyToken = (token) => {
-  try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    return decodedToken;
-  } catch (error) {
-    throw new Error("Invalid token");
-  }
+const hashPassword = async (password) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
 };
 
-export const loginUser = async (email, password) => {
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    throw new Error("User not found");
-  }
-
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    throw new Error("Invalid password");
-  }
-
-  const token = generateToken(user);
-  return { user, token };
+const comparePasswords = async (password, hashedPassword) => {
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  return isMatch;
 };
+
+export { generateToken, hashPassword, comparePasswords };
