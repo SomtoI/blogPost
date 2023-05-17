@@ -1,37 +1,35 @@
 import express from "express";
-import { createHandler } from "graphql-http/lib/use/express";
-import { buildSchema } from "graphql";
-/*import userRoutes from "./routes/userRoutes.js";
-import postRoutes from "./routes/postRoutes.js";
-import commentRoutes from "./routes/commentRoutes.js";*/
+import { ApolloServer } from "apollo-server-express";
+import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
+import typeDefs from "./graphql/schema";
+import resolvers from "./graphql/resolvers";
+
+dotenv.config();
 
 const app = express();
+app.use(cors());
+app.use(helmet());
 
-app.use(express.json());
-
-// Mount the GraphQL endpoint
-app.use(
-  "/graphql",
-  createHandler({
-    schema: buildSchema(`
-      type Query {
-        hello: String
-      }
-    `),
-    rootValue: {
-      hello: () => "Hello, world!",
-    },
-    graphiql: true,
-  })
-);
-
-// Mount the API routes
-/*app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
-app.use("/comments", commentRoutes);*/
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({ req }),
 });
+
+server.applyMiddleware({ app, path: "/graphql" });
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Connected to the database.");
+    app.listen({ port: 4000 }, () =>
+      console.log(
+        "Server running at http://localhost:4000${server.graphqlPath}"
+      )
+    );
+  })
+  .catch((error) => {
+    console.error("Unable to connect to the database:", error);
+  });
