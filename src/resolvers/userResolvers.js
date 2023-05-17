@@ -1,5 +1,9 @@
-import { User } from "../models";
-//import sequelize from '../db';
+import { User } from "../models/index.js";
+import {
+  generateToken,
+  hashPassword,
+  comparePasswords,
+} from "../utils/auth.js";
 
 const userResolvers = {
   Query: {
@@ -34,7 +38,7 @@ const userResolvers = {
           email,
           password: hashedPassword,
         });
-        const token = generateToken(user);
+        const token = generateToken(user.get());
         return { user, token };
       } catch (error) {
         console.error("Error creating user:", error);

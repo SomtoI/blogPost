@@ -1,3 +1,4 @@
+/*
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import dotenv from "dotenv";
@@ -33,12 +34,15 @@ sequelize
   .catch((error) => {
     console.error("Unable to connect to the database:", error);
   });
+*/
 
-/*
-import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import typeDefs from './schema';
-import resolvers from './resolvers';
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import dotenv from "dotenv";
+import typeDefs from "./schema.js";
+import resolvers from "./resolvers/index.js";
+import { User, Post, Comment } from "./models/index.js";
+import { authenticateUser } from "./utils/authMiddleware.js";
 
 dotenv.config();
 
@@ -47,28 +51,28 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const token = req.headers.authorization || '';
-    // Verify and decode the JWT token
-    // Set the authenticated user to the context
-    // Example code:
-    // try {
-    //   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    //   const currentUser = await models.User.findByPk(decodedToken.id);
-    //   return { currentUser };
-    // } catch (error) {
-    //   return { currentUser: null };
-    // }
+  context: ({ req }) => {
+    // Extract the authenticated user from the request
+    const user = authenticateUser(req);
+    return { user };
   },
 });
+
+await server.start();
 
 server.applyMiddleware({ app });
 
 const PORT = process.env.PORT || 4000;
+const models = { User, Post, Comment };
 
-models.sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+models.sequelize
+  .sync()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`GraphQL endpoint: ${server.graphqlPath}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Database synchronization error:", error);
   });
-});
-*/

@@ -1,20 +1,22 @@
 import { Sequelize } from "sequelize";
 
 // Database configuration
-const sequelize = new Sequelize({
-  dialect: "mssql",
-  host: process.env.DB_SERVER,
-  port: 1433, // Default MSSQL port
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  dialectOptions: {
-    options: {
-      encrypt: true, // Enable encryption (if required)
-      trustServerCertificate: true, // Enable trust server certificate (if required)
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  null,
+  {
+    dialect: "mssql",
+    host: process.env.DB_SERVER,
+    port: process.env.DB_PORT,
+    dialectOptions: {
+      options: {
+        encrypt: true, // Enable encryption (if required)
+        trustServerCertificate: true, // Enable trust server certificate (if required)
+      },
     },
-  },
-});
+  }
+);
 
 // Test the database connection
 (async () => {

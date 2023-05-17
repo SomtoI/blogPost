@@ -1,4 +1,4 @@
-import { verifyToken } from "./auth";
+import { verifyToken } from "./auth.js";
 
 export const authenticateUser = (req) => {
   const authHeader = req.headers.authorization;

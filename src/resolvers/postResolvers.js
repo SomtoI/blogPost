@@ -1,4 +1,4 @@
-import { Post } from "../models";
+import { Post } from "../models/index.js";
 
 const postResolvers = {
   Query: {

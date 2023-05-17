@@ -9,6 +9,15 @@ const generateToken = (user) => {
   return token;
 };
 
+const verifyToken = (token) => {
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    return decodedToken;
+  } catch (error) {
+    throw new Error("Invalid token");
+  }
+};
+
 const hashPassword = async (password) => {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -20,4 +29,4 @@ const comparePasswords = async (password, hashedPassword) => {
   return isMatch;
 };
 
-export { generateToken, hashPassword, comparePasswords };
+export { generateToken, verifyToken, hashPassword, comparePasswords };

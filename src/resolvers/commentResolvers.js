@@ -1,8 +1,8 @@
-import { Comment } from "../models";
+import { Comment } from "../models/index.js";
 
 const commentResolvers = {
   Query: {
-    getComments: async () => {
+    comments: async () => {
       try {
         const comments = await Comment.findAll();
         return comments;
