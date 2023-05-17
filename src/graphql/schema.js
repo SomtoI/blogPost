@@ -1,13 +1,13 @@
-import { buildSchema } from "graphql";
+import { gql } from "apollo-server-express";
 
-export default buildSchema(`
+const typeDefs = gql`
   type User {
     id: ID!
     username: String!
     email: String!
     password: String!
-    created_at: String!
-    updated_at: String!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type Post {
@@ -15,28 +15,31 @@ export default buildSchema(`
     title: String!
     content: String!
     author: User!
-    created_at: String!
-    updated_at: String!
+    comments: [PostComment!]!
+    createdAt: String!
+    updatedAt: String!
   }
 
-  type Comment {
-    post: Post!
-    author: User!
+  type PostComment {
+    id: ID!
     content: String!
-    created_at: String!
-    updated_at: String!
+    author: User!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type Query {
-    hello: String
     users: [User!]!
+    user(id: ID!): User
     posts: [Post!]!
-    comments: [Comment!]!
+    post(id: ID!): Post
   }
 
   type Mutation {
     createUser(username: String!, email: String!, password: String!): User!
     createPost(title: String!, content: String!, authorId: ID!): Post!
-    createComment(postId: ID!, authorId: ID!, content: String!): Comment!
+    createComment(content: String!, authorId: ID!, postId: ID!): PostComment!
   }
-`);
+`;
+
+export default typeDefs;
