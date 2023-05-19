@@ -14,6 +14,7 @@
   "author": "Somto Idigo",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-core": "^3.12.0",
     "apollo-server-express": "^3.12.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",

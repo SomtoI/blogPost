@@ -48,11 +48,11 @@ const userResolvers = {
       try {
         const user = await User.findByEmail(email);
         if (!user) {
-          throw new Error("Invalid email or password");
+          throw new Error("Invalid email ");
         }
         const isMatch = await comparePasswords(password, user.password);
         if (!isMatch) {
-          throw new Error("Invalid email or password");
+          throw new Error("Invalid password");
         }
         const token = generateToken(user);
         return { user, token };
