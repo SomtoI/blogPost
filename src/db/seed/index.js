@@ -1,8 +1,26 @@
 // Import necessary dependencies
-import { User, Post, Comment } from "./models/index.js";
-import { generateToken, hashPassword } from "./utils/auth.js";
+//const fs = require("fs");
+const db = require("../db");
+const hashPassword = require("../../utils/auth.js").hashPassword;
+const Comment = require("../models/Comment");
+const Post = require("../models/Post");
+const User = require("../models/User");
+// const rawComments = fs.readFileSync("db/seed/comments.json");
+// const rawPosts = fs.readFileSync("db/seed/posts.json");
+// const rawUsers = fs.readFileSync("db/seed/users.json");
+// const { comments } = JSON.parse(rawComments);
+// const { posts } = JSON.parse(rawPosts);
+// const { users } = JSON.parse(rawUsers);
 
-// Seed function to create users
+// Seed function to create data
+async function seed() {
+  await db.sync({ force: true }); // force set to true so every time the server is restarted the table gets dropped and created again
+  console.log("db schema synced!");
+
+  await seedUsers();
+  await seedPostsAndComments();
+}
+
 const seedUsers = async () => {
   try {
     // Define the number of users you want to create
@@ -75,11 +93,18 @@ const seedPostsAndComments = async () => {
 };
 
 // Function to seed the database
+async function runSeed() {
+  console.log("seeding...");
+  try {
+    await seed();
+  } catch (err) {
+    console.error(err);
+    process.exitCode = 1;
+  }
+}
 
-export const seedDatabase = async () => {
-  await seedUsers();
-  await seedPostsAndComments();
-};
+if (module === require.main) {
+  runSeed();
+}
 
-// Call the seedDatabase function
-seedDatabase();
+module.exports = { runSeed };

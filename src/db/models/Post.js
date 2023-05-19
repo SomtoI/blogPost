@@ -1,3 +1,34 @@
+const Sequelize = require("sequelize");
+const db = require("../db");
+
+const Post = db.define("post", {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  title: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  content: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  createdAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW,
+  },
+  updatedAt: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW,
+  },
+});
+
+module.exports = Post;
+/*
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/db.config.js";
 
@@ -37,3 +68,4 @@ Post.init(
 );
 
 export default Post;
+*/

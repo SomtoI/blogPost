@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const generateToken = (user) => {
   const { id, username, email } = user;
@@ -29,4 +29,9 @@ const comparePasswords = async (password, hashedPassword) => {
   return isMatch;
 };
 
-export { generateToken, verifyToken, hashPassword, comparePasswords };
+module.exports = {
+  generateToken,
+  verifyToken,
+  hashPassword,
+  comparePasswords,
+};

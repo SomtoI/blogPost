@@ -3,9 +3,9 @@ Combining all the resolver functions into a single object
 Makes for cleaner and more readable code.
 */
 
-import userResolvers from "./userResolvers.js";
-import postResolvers from "./postResolvers.js";
-import commentResolvers from "./commentResolvers.js";
+const userResolvers = require("./userResolvers.js");
+const postResolvers = require("./postResolvers.js");
+const commentResolvers = require("./commentResolvers.js");
 
 const resolvers = {
   ...userResolvers,
@@ -17,4 +17,4 @@ const resolvers = {
   },
 };
 
-export default resolvers;
+module.exports = resolvers;

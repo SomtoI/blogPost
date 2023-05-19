@@ -1,6 +1,6 @@
-import { verifyToken } from "./auth.js";
+const verifyToken = require("./auth.js").verifyToken;
 
-export const authenticateUser = (req) => {
+const authenticateUser = (req) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
@@ -16,3 +16,5 @@ export const authenticateUser = (req) => {
   }
   throw new Error("Authorization header must be provided");
 };
+
+module.exports = authenticateUser;

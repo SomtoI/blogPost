@@ -1,4 +1,4 @@
-import { Comment } from "../models/index.js";
+const Comment = require("../db/models/Comment");
 
 const commentResolvers = {
   Query: {
@@ -63,4 +63,4 @@ const commentResolvers = {
   },
 };
 
-export default commentResolvers;
+module.exports = commentResolvers;

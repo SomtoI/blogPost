@@ -1,9 +1,8 @@
-import { User } from "../models/index.js";
-import {
-  generateToken,
-  hashPassword,
-  comparePasswords,
-} from "../utils/auth.js";
+const User = require("../db/models/User");
+
+const generateToken = require("../utils/auth").generateToken;
+const hashPassword = require("../utils/auth").hashPassword;
+const comparePasswords = require("../utils/auth").comparePasswords;
 
 const userResolvers = {
   Query: {
@@ -91,4 +90,4 @@ const userResolvers = {
   },
 };
 
-export default userResolvers;
+module.exports = userResolvers;

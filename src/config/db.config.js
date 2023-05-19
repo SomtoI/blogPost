@@ -1,7 +1,10 @@
 import { Sequelize } from "sequelize";
 
-// Database configuration
+const config = "./config.json";
+const env = process.env.NODE_ENV || "development";
 
+// Database configurations
+//MSSQL Configuration
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -10,7 +13,7 @@ const sequelize = new Sequelize(
     dialect: "mssql",
     //host: process.env.DB_SERVER,
     server: process.env.DB_SERVER,
-    //port: process.env.DB_PORT,
+    port: process.env.DB_PORT,
     dialectOptions: {
       authentication: {
         type: "default",
@@ -24,27 +27,22 @@ const sequelize = new Sequelize(
     },
   }
 );
+
+//MySql configuration
 /*
-const sequelize = new Sequelize({
-  dialect: "mssql",
-  dialectOptions: {
-    options: {
-      instanceName: "TEMP-DEV-LAPTOP",
-      trustedConnection: true, // Use Windows authentication
-    },
-  },
-  host: "TEMP-DEV-LAPTOP",
-  database: "blog_platform",
-});
-*/
-/*
+console.log(env);
 const sequelize = new Sequelize(
-  `mssql://TEMP-DEV-LAPTOP\\HP@localhost:1433/${process.env.DB_NAME}`
+  config[env].database,
+  config[env].username,
+  config[env].password,
+  config[env]
 );
-*/
+
 // Test the database connection
+console.log("in here");
 (async () => {
   try {
+    console.log("first");
     await sequelize.authenticate();
     console.log("Connected to the database");
   } catch (error) {
@@ -52,5 +50,5 @@ const sequelize = new Sequelize(
     process.exit(1); // Exit the process with failure
   }
 })();
-
+*/
 export default sequelize;
