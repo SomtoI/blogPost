@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
+const Post = require("./Post");
 
 const User = db.define("user", {
   id: {
@@ -35,6 +36,11 @@ const User = db.define("user", {
 
 User.findByEmail = function (email) {
   return this.findOne({ where: { email } });
+};
+
+User.prototype.getPosts = async function () {
+  const posts = await Post.findAll({ where: { authorId: this.id } });
+  return posts;
 };
 
 module.exports = User;

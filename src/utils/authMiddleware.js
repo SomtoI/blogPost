@@ -14,7 +14,7 @@ const authenticateUser = (req) => {
     }
     throw new Error("Authentication token must be 'Bearer [token]'");
   }
-  throw new Error("Authorization header must be provided");
+  return {};
 };
 
-module.exports = authenticateUser;
+module.exports = { authenticateUser };

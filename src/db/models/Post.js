@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
-
+const User = require("./User");
 const Post = db.define("post", {
   id: {
     type: Sequelize.INTEGER,
@@ -25,7 +25,21 @@ const Post = db.define("post", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  authorId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
 });
+
+Post.prototype.getAuthor = async function () {
+  try {
+    const author = await User.findByPk(this.authorId);
+    return author;
+  } catch (error) {
+    console.error(`Error fetching author for post with ID ${this.id}:`, error);
+    throw new Error(`Failed to fetch author for post with ID ${this.id}`);
+  }
+};
 
 module.exports = Post;
 /*

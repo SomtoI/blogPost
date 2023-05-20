@@ -3,14 +3,8 @@
 const db = require("../db");
 const hashPassword = require("../../utils/auth.js").hashPassword;
 const Comment = require("../models/Comment");
-const Post = require("../models/Post");
 const User = require("../models/User");
-// const rawComments = fs.readFileSync("db/seed/comments.json");
-// const rawPosts = fs.readFileSync("db/seed/posts.json");
-// const rawUsers = fs.readFileSync("db/seed/users.json");
-// const { comments } = JSON.parse(rawComments);
-// const { posts } = JSON.parse(rawPosts);
-// const { users } = JSON.parse(rawUsers);
+const Post = require("../models/Post");
 
 // Seed function to create data
 async function seed() {
@@ -72,7 +66,9 @@ const seedPostsAndComments = async () => {
 
     console.log(`Created ${createdPosts.length} posts`);
 
-    // Generate dummy comment data
+    // Generate dummy comment data. Creates comments for each post using the reduce function
+    //Function is used to accumulate all comments ceated and return them
+
     const commentsData = createdPosts.reduce((acc, post) => {
       const numComments = Math.floor(Math.random() * 4) + 2; // Random number of comments between 2 and 5
       const comments = Array.from({ length: numComments }, () => ({

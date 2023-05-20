@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const db = require("../db");
+const User = require("./User");
+const Post = require("./Post");
 
 const Comment = db.define("comment", {
   id: {
@@ -9,6 +11,14 @@ const Comment = db.define("comment", {
   },
   content: {
     type: Sequelize.STRING,
+    allowNull: false,
+  },
+  postId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  userId: {
+    type: Sequelize.INTEGER,
     allowNull: false,
   },
   createdAt: {
@@ -22,5 +32,9 @@ const Comment = db.define("comment", {
     defaultValue: Sequelize.NOW,
   },
 });
+
+User.hasMany(Post, { as: "Posts", foreignKey: "authorId" });
+Post.belongsTo(User, { foreignKey: "authorId" });
+User.hasMany(Comment, { foreignKey: "userId", as: "comments" });
 
 module.exports = Comment;

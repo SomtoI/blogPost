@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy application files
 COPY package.json package-lock.json ./
-COPY src ./src
+COPY ./src .
 
 # Set the environment variable for the database file path
 ENV DATABASE_FILE=/app/src/database.db

@@ -1,12 +1,13 @@
-const User = require("../db/models/User");
-
-const generateToken = require("../utils/auth").generateToken;
-const hashPassword = require("../utils/auth").hashPassword;
-const comparePasswords = require("../utils/auth").comparePasswords;
+const User = require("../../db/models/User");
+const generateToken = require("../../utils/auth").generateToken;
+const hashPassword = require("../../utils/auth").hashPassword;
+const comparePasswords = require("../../utils/auth").comparePasswords;
+const { authenticationError } = require("../../utils/errorHandling");
 
 const userResolvers = {
   Query: {
-    getUsers: async () => {
+    /*
+    users: async () => {
       try {
         const users = await User.findAll();
         return users;
@@ -15,18 +16,20 @@ const userResolvers = {
         throw new Error("Failed to fetch users");
       }
     },
-    getUserById: async (_, { id }) => {
+  
+    user: async (_, { id }) => {
       try {
         const user = await User.findByPk(id);
         if (!user) {
           throw new Error(`User with ID ${id} not found`);
         }
+
         return user;
       } catch (error) {
         console.error(`Error fetching user with ID ${id}:`, error);
-        throw new Error(`Failed to fetch user with ID ${id}`);
+        throw new Error(`User with ID ${id} not found`);
       }
-    },
+    },*/
   },
   Mutation: {
     createUser: async (_, { username, email, password }) => {
@@ -58,33 +61,22 @@ const userResolvers = {
         return { user, token };
       } catch (error) {
         console.error("Error logging in:", error);
-        throw new Error("Failed to log in");
+        throw new Error("Failed to log in", error);
       }
     },
-    updateUser: async (_, { id, input }) => {
+  },
+
+  User: {
+    posts: async (user) => {
       try {
-        const user = await User.findByPk(id);
-        if (!user) {
-          throw new Error(`User with ID ${id} not found`);
-        }
-        await user.update(input);
-        return user;
+        const posts = await user.getPosts(); // Assuming the User model has a 'getPosts' association method
+        return posts;
       } catch (error) {
-        console.error(`Error updating user with ID ${id}:`, error);
-        throw new Error(`Failed to update user with ID ${id}`);
-      }
-    },
-    deleteUser: async (_, { id }) => {
-      try {
-        const user = await User.findByPk(id);
-        if (!user) {
-          throw new Error(`User with ID ${id} not found`);
-        }
-        await user.destroy();
-        return true;
-      } catch (error) {
-        console.error(`Error deleting user with ID ${id}:`, error);
-        throw new Error(`Failed to delete user with ID ${id}`);
+        console.error(
+          `Error fetching posts for user with ID ${user.id}:`,
+          error
+        );
+        throw new Error(`Failed to fetch posts for user with ID ${user.id}`);
       }
     },
   },
