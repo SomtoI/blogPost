@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cors = require("cors");
-const { ApolloServer } = require("apollo-server-express");
+const { ApolloServer, ApolloError } = require("apollo-server-express");
 const {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
@@ -13,6 +13,8 @@ const { authenticateUser } = require("./utils/authMiddleware.js");
 const { customErrorFormatter } = require("./utils/errorHandling");
 
 require("dotenv").config();
+
+const PORT = process.env.PORT || 4000;
 
 const startServer = async () => {
   try {
@@ -46,14 +48,21 @@ const startServer = async () => {
               footer: false,
             }),
       ],
-      formatError: customErrorFormatter,
+      formatError: (error) => {
+        return customErrorFormatter(error);
+      },
     });
 
     await server.start(); //Start Server. Vital to ensure server connection works before adding it to Express App
 
     server.applyMiddleware({ app, path: "/graphql" }); //Applied the Apollo Server middleware to the Express App
 
-    const PORT = process.env.PORT || 4000;
+    app.use((err, req, res, next) => {
+      console.log("here");
+      console.log(err);
+      const statusCode = err.statusCode || 500;
+      res.status(statusCode).json({ error: err.message });
+    });
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
@@ -66,35 +75,4 @@ const startServer = async () => {
 
 startServer().catch((error) => console.error("Error starting server:", error));
 
-//Commented out code for connecting to external DB
-/*
-const models = { User, Post, Comment };
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connected to the database.");
-
-    models.sequelize
-      .sync({ force: true }) // force set to true so every time the server is restarted the table gets dropped and created again
-      .then(() => {
-        console.log("Database synced. Seeding");
-        // Seed the database before starting the server
-        seedDatabase()
-          .then(() => {
-            app.listen(PORT, () => {
-              console.log(`Server running on port ${PORT}`);
-              console.log(`GraphQL endpoint: ${server.graphqlPath}`);
-            });
-          })
-          .catch((error) => {
-            console.error("Error seeding the database:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Database synchronization error:", error);
-      });
-  })
-  .catch((error) => {
-    console.error("Unable to connect to the database:", error);
-  });
-*/
+module.exports = startServer;

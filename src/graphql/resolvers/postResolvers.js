@@ -15,7 +15,7 @@ const postResolvers = {
         throw new Error("Failed to fetch posts");
       }
     }),
-    post: authenticationError()(async (_, { id }) => {
+    post: authenticationError()(async (_, { id }, context) => {
       try {
         const post = await Post.findByPk(id);
         if (!post) {
@@ -32,9 +32,6 @@ const postResolvers = {
     createPost: authenticationError()(
       async (_, { title, content }, context) => {
         try {
-          if (!context.user) {
-            throw new Error("Authentication required");
-          }
           const authorId = context.user.id;
           const post = await Post.create({
             title,
@@ -52,12 +49,6 @@ const postResolvers = {
     updatePost: authenticationError()(
       async (_, { id, title, content }, context) => {
         try {
-          // Check if the user is authenticated
-          if (!context.user) {
-            throw new Error("Authentication required");
-          }
-
-          // Find the post by ID
           const post = await Post.findByPk(id);
           if (!post) {
             throw new Error(`Post with ID ${id} not found`);
@@ -79,12 +70,6 @@ const postResolvers = {
 
     deletePost: authenticationError()(async (_, { id }, context) => {
       try {
-        // Check if the user is authenticated
-        if (!context.user) {
-          throw new Error("Authentication required");
-        }
-
-        // Find the post by ID
         const post = await Post.findByPk(id);
         if (!post) {
           throw new Error(`Post with ID ${id} not found`);

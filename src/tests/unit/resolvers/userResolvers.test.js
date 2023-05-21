@@ -242,3 +242,136 @@ describe("User Resolvers", () => {
     });
   });
 });
+
+const { ApolloServer, gql } = require("apollo-server");
+const { createTestClient } = require("apollo-server-testing");
+const { userResolvers } = require("./userResolvers");
+const { User } = require("../../db/models/User");
+
+// Mocked data
+const mockUsers = [
+  {
+    id: 1,
+    username: "user1",
+    email: "user1@example.com",
+    password: "password1",
+  },
+  {
+    id: 2,
+    username: "user2",
+    email: "user2@example.com",
+    password: "password2",
+  },
+];
+
+// GraphQL schema for testing
+const typeDefs = gql`
+  type User {
+    id: Int
+    username: String
+    email: String
+    password: String
+  }
+
+  type Query {
+    users: [User]
+    user(id: Int): User
+  }
+`;
+
+// Mock the database functions
+jest.mock("../../db/models/User", () => ({
+  findAll: jest.fn(),
+  findByPk: jest.fn(),
+  create: jest.fn(),
+}));
+
+describe("User Resolvers", () => {
+  let server;
+  let query;
+
+  beforeAll(() => {
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers: userResolvers,
+    });
+    server = createTestClient(apolloServer);
+    query = server.query;
+  });
+
+  beforeEach(() => {
+    User.findAll.mockReset();
+    User.findByPk.mockReset();
+    User.create.mockReset();
+  });
+
+  describe("Query - users", () => {
+    it("should return all users", async () => {
+      User.findAll.mockResolvedValueOnce(mockUsers);
+
+      const { data } = await query({
+        query: "{ users { id, username, email } }",
+      });
+
+      expect(data).toEqual({ users: mockUsers });
+      expect(User.findAll).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Query - user", () => {
+    it("should return a specific user by ID", async () => {
+      const userId = 1;
+      const mockUser = mockUsers.find((user) => user.id === userId);
+      User.findByPk.mockResolvedValueOnce(mockUser);
+
+      const { data } = await query({
+        query: `{ user(id: ${userId}) { id, username, email } }`,
+      });
+
+      expect(data).toEqual({ user: mockUser });
+      expect(User.findByPk).toHaveBeenCalledTimes(1);
+      expect(User.findByPk).toHaveBeenCalledWith(userId);
+    });
+
+    it("should throw an error if user is not found", async () => {
+      const userId = 999;
+      User.findByPk.mockResolvedValueOnce(null);
+
+      const { errors } = await query({
+        query: `{ user(id: ${userId}) { id, username, email } }`,
+      });
+
+      expect(errors[0].message).toBe(`User with ID ${userId} not found`);
+      expect(User.findByPk).toHaveBeenCalledTimes(1);
+      expect(User.findByPk).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  describe("Mutation - createUser", () => {
+    it("should create a new user", async () => {
+      const newUser = {
+        username: "newuser",
+        email: "newuser@example.com",
+        password: "newpassword",
+      };
+      User.create.mockResolvedValueOnce(newUser);
+
+      const { data } = await query({
+        query: `
+          mutation {
+            createUser(username: "${newUser.username}", email: "${newUser.email}", password: "${newUser.password}") {
+              id
+              username
+              email
+              password
+            }
+          }
+        `,
+      });
+
+      expect(data.createUser).toEqual(newUser);
+      expect(User.create).toHaveBeenCalledTimes(1);
+      expect(User.create).toHaveBeenCalledWith(newUser);
+    });
+  });
+});
