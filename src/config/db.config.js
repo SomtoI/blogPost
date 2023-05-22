@@ -1,3 +1,8 @@
+/* 
+This file was originally for connecting to an external database.
+Configurations for both MSSQL and MySQL so either can easily be used in the future.
+*/
+
 import { Sequelize } from "sequelize";
 
 const config = "./config.json";

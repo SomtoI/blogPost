@@ -1,5 +1,5 @@
 const request = require("supertest");
-const { startServer } = require("../../server");
+const startServer = require("../server");
 
 let server;
 
@@ -54,5 +54,5 @@ describe("GraphQL API - End-to-End Tests", () => {
     expect(response.body.data.posts).toBeInstanceOf(Array);
   });
 
-  // Add more end-to-end test cases for other API operations
+  // TODO: Add more end-to-end test cases for other API operations
 });

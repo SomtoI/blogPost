@@ -1,8 +1,7 @@
-const { ApolloServer, gql } = require("apollo-server");
-const { createTestClient } = require("apollo-server-testing");
-const { postResolvers } = require("./postResolvers");
-const { Post } = require("../../db/models/Post");
-const { User } = require("../../db/models/User");
+const { ApolloServer, gql } = require("apollo-server-express");
+const { postResolvers } = require("../../../graphql/resolvers/postResolvers");
+const { Post } = require("../../../db/models/Post");
+const { User } = require("../../../db/models/User");
 
 // Mocked data
 const mockPosts = [
@@ -47,11 +46,11 @@ const typeDefs = gql`
 `;
 
 // Mock the database functions
-jest.mock("../../db/models/Post", () => ({
+jest.mock("../../../db/models/Post", () => ({
   findAll: jest.fn(),
 }));
 
-jest.mock("../../db/models/User", () => ({
+jest.mock("../../../db/models/User", () => ({
   findByPk: jest.fn(),
 }));
 
@@ -59,13 +58,13 @@ describe("Post Resolvers", () => {
   let server;
   let query;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers: postResolvers,
     });
-    server = createTestClient(apolloServer);
-    query = server.query;
+
+    //await apolloServer.executeOperation({ query: QUERY });
   });
 
   beforeEach(() => {

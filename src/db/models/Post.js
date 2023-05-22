@@ -31,7 +31,7 @@ const Post = db.define("post", {
   },
 });
 
-Post.prototype.getAuthor = async function () {
+Post.getAuthor = async function () {
   try {
     const author = await User.findByPk(this.authorId);
     return author;

@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "npm test",
+    "test": "npx jest",
     "seed": "node src/db/seed/index.js"
   },
   "keywords": [

@@ -1,4 +1,5 @@
 const Post = require("../../db/models/Post");
+const User = require("../../db/models/User");
 const {
   authenticationError,
   authorizationError,
@@ -90,7 +91,7 @@ const postResolvers = {
   Post: {
     author: async (post) => {
       try {
-        const author = await post.getAuthor(); // Assuming the Post model has an 'getAuthor' association method
+        const author = await User.findByPk(post.authorId); // Assuming the Post model has an 'getAuthor' association method
         return author;
       } catch (error) {
         console.error(

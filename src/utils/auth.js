@@ -3,9 +3,17 @@ const bcrypt = require("bcrypt");
 
 const generateToken = (user) => {
   const { id, username, email } = user;
-  const token = jwt.sign({ id, username, email }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const currentTime = Math.floor(Date.now() / 1000); // Get the current time in seconds
+  const expiresIn = 24 * 60 * 60; // Token expiration time in seconds (1 day)
+
+  const payload = {
+    id,
+    username,
+    email,
+    iat: currentTime, // "iat" field represents the issued at time
+    exp: currentTime + expiresIn, // Set the expiration time
+  };
+  const token = jwt.sign(payload, process.env.JWT_SECRET);
   return token;
 };
 

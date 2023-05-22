@@ -34,6 +34,7 @@ const startServer = async () => {
       context: ({ req }) => {
         // Extract the authenticated user from the request and confirm validity of authentication
         const user = authenticateUser(req);
+
         return { user };
       },
       //Apollo sandbox to be able to make queries to the GraphQL endpoints in the browser
@@ -58,8 +59,8 @@ const startServer = async () => {
     server.applyMiddleware({ app, path: "/graphql" }); //Applied the Apollo Server middleware to the Express App
 
     app.use((err, req, res, next) => {
-      console.log("here");
-      console.log(err);
+      // console.log("here");
+      // console.error(err);
       const statusCode = err.statusCode || 500;
       res.status(statusCode).json({ error: err.message });
     });
